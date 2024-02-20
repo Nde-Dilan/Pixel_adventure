@@ -6,7 +6,8 @@ import 'package:pixel_adventure/actors/player.dart';
 
 class Level extends World {
   final String levelName;
-  Level({required this.levelName});
+  final Player player;
+  Level({required this.levelName,required this.player});
   late TiledComponent level;
   final player1 = Player(character: "Mask Dude");
   final player2 = Player(character: "Pink Man");
@@ -27,10 +28,8 @@ class Level extends World {
       switch (spawnPoint.class_) {
         //the string "Player" was assigned as class to the object layer we created in Tiled
         case "Player":
-          final player1 = Player(
-              character: "Mask Dude",
-              position: Vector2(spawnPoint.x, spawnPoint.y));
-          add(player1);
+           player.position = Vector2(spawnPoint.x, spawnPoint.y);
+          add(player);
 
           break;
         default:

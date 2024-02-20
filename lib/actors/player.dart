@@ -1,8 +1,7 @@
 import 'dart:async';
 
 import 'package:flame/components.dart';
-import 'package:flutter/src/services/keyboard_key.g.dart';
-import 'package:flutter/src/services/raw_keyboard.dart';
+import 'package:flutter/services.dart';
 import 'package:pixel_adventure/pixel_adventure.dart';
 
 enum PlayerState {
@@ -17,7 +16,7 @@ class Player extends SpriteAnimationGroupComponent
   String character;
   Player({
     position,
-    required this.character,
+    this.character = 'Ninja Frog',
   }) : super(position: position);
 
   late final SpriteAnimation idleAnimation;
@@ -26,7 +25,7 @@ class Player extends SpriteAnimationGroupComponent
   final int amount = 11;
 
   //Player direction
-  PlayerDirection playerDirection = PlayerDirection.left;
+  PlayerDirection playerDirection = PlayerDirection.none;
 
   double moveSpeed = 100;
   Vector2 velocity = Vector2.zero();
@@ -46,23 +45,33 @@ class Player extends SpriteAnimationGroupComponent
     return super.onLoad();
   }
 
+  //After adding the keyEvent to our component we need to tell our game that one of its component is listening for keyEvents so activate that
+
   @override
   bool onKeyEvent(RawKeyEvent event, Set<LogicalKeyboardKey> keysPressed) {
-    print(keysPressed);
+    // print(keysPressed);
     final isLeftKeyPressed = keysPressed.contains(LogicalKeyboardKey.keyA) ||
         keysPressed.contains(LogicalKeyboardKey.arrowLeft);
 
     final isRightKeyPressed = keysPressed.contains(LogicalKeyboardKey.keyD) ||
         keysPressed.contains(LogicalKeyboardKey.arrowRight);
+    final isUpKeyPressed = keysPressed.contains(LogicalKeyboardKey.arrowUp);
+
+    final isDownKeyPressed = keysPressed.contains(LogicalKeyboardKey.arrowDown);
+
+    //INFO: There's a problem with our arrow keys, it seems like they are inversed
 
     if (isLeftKeyPressed && isRightKeyPressed) {
       playerDirection = PlayerDirection.none;
     } else if (isLeftKeyPressed) {
       playerDirection = PlayerDirection.left;
-      print('Going left');
     } else if (isRightKeyPressed) {
       playerDirection = PlayerDirection.right;
-      print('Going right');
+    } else if (isUpKeyPressed) {
+      //FIXME: I shold remove this since i think the bug of the keybord is just on my machine
+      playerDirection = PlayerDirection.left;
+    } else if (isDownKeyPressed) {
+      playerDirection = PlayerDirection.right;
     } else {
       playerDirection = PlayerDirection.none;
     }
